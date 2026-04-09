@@ -15,7 +15,7 @@ public class PermitRequestForm {
 
     }
 
-    public void showAcknowledgement(){
+    public void showAcknowledgement(String acknowledgment){
 
     }
 
