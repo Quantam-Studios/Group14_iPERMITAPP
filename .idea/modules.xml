@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/Group14_iPERMITAPP.iml" filepath="$PROJECT_DIR$/.idea/Group14_iPERMITAPP.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Group14_iPERMITAPP/Group14_iPERMITAPP.iml" filepath="$PROJECT_DIR$/Group14_iPERMITAPP/Group14_iPERMITAPP.iml" />
     </modules>
   </component>
 </project>
