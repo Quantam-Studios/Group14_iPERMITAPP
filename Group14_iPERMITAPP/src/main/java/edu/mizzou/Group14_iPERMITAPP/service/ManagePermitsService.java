@@ -26,8 +26,9 @@ public class ManagePermitsService {
 
     private AcknowledgeEOService acknowledgeEO;
 
-    public ManagePermitsService(){
-
+    public ManagePermitsService(AcknowledgeEOService ackEO){
+        this.acknowledgeEO = ackEO;
+        this.form = new PermitRequestForm();
     }
 
     public Double getPermitFee(String permitId){//takes permitId and finds permitfee for that EP

@@ -22,4 +22,8 @@ public class Permit {
     @ManyToOne
     @JoinColumn(name = "eo_id")
     private EO eo;
+
+    public String toString(){
+        return "Permit " + permitID + ":\nIssued on " + dateOfIssue + "\nValid until " + duration + "\n Description: " + description;
+    }
 }
