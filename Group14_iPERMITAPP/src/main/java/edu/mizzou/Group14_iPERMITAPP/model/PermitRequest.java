@@ -9,12 +9,17 @@ import java.util.Date;
 public class PermitRequest {
 
     @Id
-    private String requestNo;
+    private String requestNo; // system-generated sequence
 
     private Date dateOfRequest;
+
     private String activityDescription;
+
     private Date activityStartDate;
+
+    // NOTE: required by workbook (even though logically weird)
     private Date activityDuration;
+
     private Double permitFee;
 
     @ManyToOne
