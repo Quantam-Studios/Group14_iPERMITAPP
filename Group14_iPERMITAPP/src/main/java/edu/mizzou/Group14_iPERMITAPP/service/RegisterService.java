@@ -10,29 +10,34 @@ import java.util.Date;
 @Service
 public class RegisterService {
 
-    @Autowired
-    private RERepository reRepository;
+	@Autowired
+	private RERepository reRepository;
 
-    public boolean login(String email, String password) {
-        RE user = reRepository.findByEmail(email);
+	public boolean login(String email, String password) {
+		RE user = reRepository.findByEmail(email);
 
-        if (user == null) return false;
+		if (user == null)
+			return false;
 
-        return user.getPassword().equals(password);
-    }
+		return user.getPassword().equals(password);
+	}
 
-    public boolean register(String email, String password) {
-        if (reRepository.findByEmail(email) != null) {
-            return false; // user already exists
-        }
+	public boolean register(String name, String orgName, String address, String email, String password) {
 
-        RE user = new RE();
-        user.setEmail(email);
-        user.setPassword(password);
-        user.setCreatedDate(new Date());
+		if (reRepository.findByEmail(email) != null) {
+			return false;
+		}
 
-        reRepository.save(user);
+		RE user = new RE();
+		user.setContactPersonName(name);
+		user.setOrganizationName(orgName);
+		user.setOrganizationAddress(address);
+		user.setEmail(email);
+		user.setPassword(password);
+		user.setCreatedDate(new Date());
 
-        return true;
-    }
+		reRepository.save(user);
+
+		return true;
+	}
 }

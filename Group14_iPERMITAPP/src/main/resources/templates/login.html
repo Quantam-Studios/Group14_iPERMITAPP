@@ -72,11 +72,14 @@
 
     <!-- REGISTER FORM -->
     <div id="registerForm" style="display:none;">
-        <form method="post" action="/register">
-            <input name="email" placeholder="Email" required />
-            <input name="password" type="password" placeholder="Password" required />
-            <button type="submit">Register</button>
-        </form>
+		<form method="post" action="/register">
+		    <input name="contactPersonName" placeholder="Name" required />
+		    <input name="organizationName" placeholder="Organization" required />
+		    <input name="organizationAddress" placeholder="Address" required />
+		    <input name="email" placeholder="Email" required />
+		    <input name="password" type="password" placeholder="Password" required />
+		    <button type="submit">Register</button>
+		</form>
 
         <p class="toggle" onclick="showLogin()">Back to login</p>
     </div>

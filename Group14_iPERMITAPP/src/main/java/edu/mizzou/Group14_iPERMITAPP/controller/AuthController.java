@@ -8,37 +8,37 @@ import org.springframework.web.bind.annotation.*;
 @Controller
 public class AuthController {
 
-    @Autowired
-    private RegisterService registerService;
+	@Autowired
+	private RegisterService registerService;
 
-    @GetMapping("/login")
-    public String loginPage() {
-        return "login";
-    }
+	@GetMapping("/login")
+	public String loginPage() {
+		return "login";
+	}
 
-    @PostMapping("/login")
-    public String handleLogin(@RequestParam String email,
-                              @RequestParam String password) {
+	@PostMapping("/login")
+	public String handleLogin(@RequestParam String email, @RequestParam String password) {
 
-        boolean success = registerService.login(email, password);
+		boolean success = registerService.login(email, password);
 
-        if (success) {
-            return "redirect:/re/dashboard";
-        }
+		if (success) {
+			return "redirect:/re/dashboard";
+		}
 
-        return "redirect:/login?error=true";
-    }
+		return "redirect:/login?error=true";
+	}
 
-    @PostMapping("/register")
-    public String handleRegister(@RequestParam String email,
-                                 @RequestParam String password) {
+	@PostMapping("/register")
+	public String handleRegister(@RequestParam String contactPersonName, @RequestParam String organizationName,
+			@RequestParam String organizationAddress, @RequestParam String email, @RequestParam String password) {
 
-        boolean success = registerService.register(email, password);
+		boolean success = registerService.register(contactPersonName, organizationName, organizationAddress, email,
+				password);
 
-        if (success) {
-            return "redirect:/login?registered=true";
-        }
+		if (success) {
+			return "redirect:/login?registered=true";
+		}
 
-        return "redirect:/login?error=true";
-    }
+		return "redirect:/login?error=true";
+	}
 }
