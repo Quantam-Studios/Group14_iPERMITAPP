@@ -91,24 +91,21 @@
 
         <div class="permit-row">
 
-            <div class="info">
-                <strong>Permit ID:</strong> <span th:text="${permit.id}"></span><br>
+			<div class="info">
+			    <strong>Permit ID:</strong> <span th:text="${permit.requestNo}"></span><br>
 
-                <strong>Organization:</strong>
-                <span th:text="${permit.organizationName}"></span><br>
+			    <strong>Organization:</strong>
+			    <span th:text="${permit.re.organizationName}"></span><br>
 
-                <strong>Contact:</strong>
-                <span th:text="${permit.contactPersonName}"></span><br>
+			    <strong>Contact:</strong>
+			    <span th:text="${permit.re.contactPersonName}"></span><br>
 
-                <strong>Date Submitted:</strong>
-                <span th:text="${permit.submissionDate}"></span>
-            </div>
+			    <strong>Date Submitted:</strong>
+			    <span th:text="${permit.dateOfRequest}"></span>
+			</div>
 
             <!-- REVIEW BUTTON -->
-            <a th:href="@{'/eo/permits/' + ${permit.id}}"
-               class="review-btn">
-                Review
-            </a>
+			<a th:href="@{'/eo/permits/' + ${permit.requestNo}}" class="review-btn">Review</a>
 
         </div>
 
