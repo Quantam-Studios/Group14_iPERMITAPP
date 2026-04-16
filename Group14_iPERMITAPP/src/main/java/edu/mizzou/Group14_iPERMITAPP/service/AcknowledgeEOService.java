@@ -6,6 +6,8 @@ import edu.mizzou.Group14_iPERMITAPP.repository.RequestStatusRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class AcknowledgeEOService { //still needs work
 
@@ -24,5 +26,9 @@ public class AcknowledgeEOService { //still needs work
         status.setDate(currentDate);
 
         rsRepository.save(status);
+    }
+
+    public List<PermitRequest> getValidPermitRequests() {
+        return rsRepository.findPaidPermitRequests();
     }
 }
