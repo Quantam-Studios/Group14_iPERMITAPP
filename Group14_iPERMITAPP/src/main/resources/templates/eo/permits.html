@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Permits</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            width: 800px;
+            margin: 60px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        .back {
+            color: blue;
+        }
+
+        .logout {
+            color: red;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+        }
+
+        .permit-card {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin-bottom: 12px;
+            border-radius: 6px;
+            background: #fafafa;
+        }
+
+        .permit-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .info {
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .review-btn {
+            padding: 8px 14px;
+            background-color: #2d6cdf;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .review-btn:hover {
+            background-color: #1f56b8;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="top-bar">
+        <a class="back" href="/eo/dashboard">← Dashboard</a>
+        <a class="logout" href="/logout">Logout</a>
+    </div>
+
+    <h2>Paid Permit Requests</h2>
+
+    <!-- LOOP THROUGH PERMITS -->
+    <div th:each="permit : ${permits}" class="permit-card">
+
+        <div class="permit-row">
+
+            <div class="info">
+                <strong>Permit ID:</strong> <span th:text="${permit.id}"></span><br>
+
+                <strong>Organization:</strong>
+                <span th:text="${permit.organizationName}"></span><br>
+
+                <strong>Contact:</strong>
+                <span th:text="${permit.contactPersonName}"></span><br>
+
+                <strong>Date Submitted:</strong>
+                <span th:text="${permit.submissionDate}"></span>
+            </div>
+
+            <!-- REVIEW BUTTON -->
+            <a th:href="@{'/eo/permits/' + ${permit.id}}"
+               class="review-btn">
+                Review
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>
