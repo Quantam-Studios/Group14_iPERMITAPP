@@ -8,6 +8,7 @@ import edu.mizzou.Group14_iPERMITAPP.repository.EnvironmentalPermitRepository;
 import edu.mizzou.Group14_iPERMITAPP.repository.PermitRequestRepository;
 import edu.mizzou.Group14_iPERMITAPP.repository.RequestStatusRepository;
 import edu.mizzou.Group14_iPERMITAPP.service.AcknowledgeEOService;
+import edu.mizzou.Group14_iPERMITAPP.service.RegisterService;
 import jakarta.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +37,67 @@ public class RegistrationForm { // aka ministry's website
     
     @Autowired
     private EORepository eoRepository;
+
+    @Autowired
+    private RegisterService registerService;
+
+    @GetMapping("/")
+    public String redirectToLogin() {
+        return "redirect:/login";
+    }
+
+    @GetMapping("/login")
+    public String loginPage() {
+        return "login";
+    }
+
+    @PostMapping("/login")
+    public String handleLogin(@RequestParam String email, @RequestParam String password, HttpSession session) {
+        boolean success = registerService.login(email, password);
+
+        if (success) {
+
+            if (email.equals("environmentalministry158@gmail.com")) {
+                session.setAttribute("userType", "EO");
+                session.setAttribute("eo-id", "EO-001");
+                return "redirect:/eo/dashboard";
+            }
+
+            session.setAttribute("userEmail", email);
+            return "redirect:/re/dashboard";
+        }
+
+        return "redirect:/login?error=true";
+    }
+
+    @GetMapping("/logout")
+    public String logout(HttpSession session) {
+        session.invalidate();
+        return "redirect:/login";
+    }
+
+    @PostMapping("/register")
+    public String handleRegister(@RequestParam String contactPersonName, @RequestParam String organizationName,
+                                 @RequestParam String organizationAddress, @RequestParam String email, @RequestParam String password,
+                                 @RequestParam String siteAddress, @RequestParam String siteContactPerson) {
+
+        String result = registerService.register(contactPersonName, organizationName, organizationAddress, email,
+                password, siteAddress, siteContactPerson);
+
+        switch (result) {
+            case "SUCCESS":
+                return "redirect:/login?registered=true";
+            case "EMAIL_EXISTS":
+                return "redirect:/login?error=exists&mode=register";
+            case "INVALID_EMAIL":
+                return "redirect:/login?error=email&mode=register";
+            case "EMPTY_FIELDS":
+                return "redirect:/login?error=empty&mode=register";
+            default:
+                return "redirect:/login?error=true";
+        }
+    }
+
 
     @GetMapping("/eo/dashboard")
     public String eoDashboard(HttpSession session) {
