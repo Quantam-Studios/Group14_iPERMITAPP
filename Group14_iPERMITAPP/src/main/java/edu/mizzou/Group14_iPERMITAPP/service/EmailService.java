@@ -38,7 +38,7 @@ public class EmailService {
 
     public void sendDecisionEmail(PermitRequest permit, String decision, String description) {
         if (description.equals("")){
-            description = "no reason givin";
+            description = "no reason given";
         }
         String to = permit.getRe().getEmail();
         String subject = "Your permit has been " + decision;
