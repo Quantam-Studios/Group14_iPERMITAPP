@@ -1,5 +1,6 @@
 package edu.mizzou.Group14_iPERMITAPP.controller;
 import edu.mizzou.Group14_iPERMITAPP.model.PermitRequest;
+import edu.mizzou.Group14_iPERMITAPP.repository.PermitRequestRepository;
 import edu.mizzou.Group14_iPERMITAPP.service.AcknowledgeEOService;
 import jakarta.servlet.http.HttpSession;
 

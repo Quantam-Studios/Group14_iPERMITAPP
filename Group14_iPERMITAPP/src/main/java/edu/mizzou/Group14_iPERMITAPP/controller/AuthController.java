@@ -1,5 +1,7 @@
 package edu.mizzou.Group14_iPERMITAPP.controller;
 
+import edu.mizzou.Group14_iPERMITAPP.model.EO;
+import edu.mizzou.Group14_iPERMITAPP.repository.EORepository;
 import edu.mizzou.Group14_iPERMITAPP.service.RegisterService;
 import jakarta.servlet.http.HttpSession;
 
@@ -9,6 +11,9 @@ import org.springframework.web.bind.annotation.*;
 
 @Controller
 public class AuthController {
+
+	@Autowired
+	private EORepository eoRepository;
 
 	@Autowired
 	private RegisterService registerService;
@@ -23,6 +28,12 @@ public class AuthController {
 
 		if (email.equals("environmentalministry158@gmail.com") && password.equals("Ipermit123")) {
 			session.setAttribute("userType", "EO");
+			session.setAttribute("eo-id", "EO-001");
+			EO eo = new EO();
+			eo.setId("EO-001");
+			eo.setName("Steve");
+			eo.setPassword("Ipermit123");
+			eoRepository.save(eo);
 			return "redirect:/eo/dashboard";
 		}
 
