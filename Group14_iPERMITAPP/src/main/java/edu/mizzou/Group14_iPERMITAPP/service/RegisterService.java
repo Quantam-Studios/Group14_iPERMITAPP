@@ -24,11 +24,7 @@ public class RegisterService {
 
 	public boolean login(String email, String password) {
 	    RE re = reRepository.findByEmail(email);
-	    EO eo = eoRepository.findByEmail(email); 
-	    
-	    System.out.println("Debug: Search email: " + email);
-	    System.out.println("Debug: Found RE: " + (re != null ? re.getEmail() : "null"));
-	    System.out.println("Debug: Found EO: " + (eo != null ? eo.getEmail() : "null"));
+	    EO eo = eoRepository.findByEmail(email);
 	    
 	    if (re != null) {
 	        return re.getPassword().equals(password);
