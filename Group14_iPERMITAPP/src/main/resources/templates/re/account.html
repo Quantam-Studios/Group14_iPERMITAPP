@@ -88,6 +88,17 @@
 		       placeholder="Enter email" />
 
 	    <hr>
+		
+		<h3>Site Info</h3>
+		<input name="siteAddress" 
+		       th:value="${user.sites != null and !user.sites.isEmpty() ? user.sites[0].siteAddress : ''}"
+		       placeholder="Enter site address" required />
+
+		<input name="siteContactPerson" 
+		       th:value="${user.sites != null and !user.sites.isEmpty() ? user.sites[0].siteContactPerson : ''}"
+		       placeholder="Enter site contact person" required />
+
+		<hr>
 
 	    <h3>Change Password (optional)</h3>
 

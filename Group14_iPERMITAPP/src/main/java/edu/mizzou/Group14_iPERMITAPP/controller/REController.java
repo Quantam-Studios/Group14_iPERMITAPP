@@ -1,5 +1,6 @@
 package edu.mizzou.Group14_iPERMITAPP.controller;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -18,6 +19,7 @@ import edu.mizzou.Group14_iPERMITAPP.model.EnvironmentalPermit;
 import edu.mizzou.Group14_iPERMITAPP.model.Payment;
 import edu.mizzou.Group14_iPERMITAPP.model.PermitRequest;
 import edu.mizzou.Group14_iPERMITAPP.model.RE;
+import edu.mizzou.Group14_iPERMITAPP.model.RESite;
 import edu.mizzou.Group14_iPERMITAPP.repository.EnvironmentalPermitRepository;
 import edu.mizzou.Group14_iPERMITAPP.repository.PaymentRepository;
 import edu.mizzou.Group14_iPERMITAPP.repository.PermitRequestRepository;
@@ -222,41 +224,68 @@ public class REController {
 	}
 
 	@PostMapping("/re/account/update")
-	public String updateAccount(@RequestParam String contactPersonName, @RequestParam String organizationName,
-			@RequestParam String organizationAddress, @RequestParam String email,
-			@RequestParam(required = false) String currentPassword, @RequestParam(required = false) String newPassword,
-			HttpSession session) {
+	public String updateAccount(
+	        @RequestParam String contactPersonName, 
+	        @RequestParam String organizationName,
+	        @RequestParam String organizationAddress, 
+	        @RequestParam String email,
+	        @RequestParam(required = false) String currentPassword, 
+	        @RequestParam(required = false) String newPassword,
+	        @RequestParam String siteAddress,
+	        @RequestParam String siteContactPerson,
+	        HttpSession session) {
 
-		String sessionEmail = (String) session.getAttribute("userEmail");
-		RE user = reRepository.findByEmail(sessionEmail);
+	    String sessionEmail = (String) session.getAttribute("userEmail");
+	    RE user = reRepository.findByEmail(sessionEmail);
 
-		if (!EMAIL_PATTERN.matcher(email).matches()) {
-			return "redirect:/re/account?error=email";
-		}
+	    // Email Format Validation
+	    if (!EMAIL_PATTERN.matcher(email).matches()) {
+	        return "redirect:/re/account?error=email";
+	    }
 
-		RE existing = reRepository.findByEmail(email);
-		if (existing != null && !email.equals(sessionEmail)) {
-			return "redirect:/re/account?error=exists";
-		}
+	    // Check if email change conflicts with another user
+	    RE existing = reRepository.findByEmail(email);
+	    if (existing != null && !email.equals(sessionEmail)) {
+	        return "redirect:/re/account?error=exists";
+	    }
 
-		user.setContactPersonName(contactPersonName);
-		user.setOrganizationName(organizationName);
-		user.setOrganizationAddress(organizationAddress);
-		user.setEmail(email);
+	    // Update Basic Profile Info
+	    user.setContactPersonName(contactPersonName);
+	    user.setOrganizationName(organizationName);
+	    user.setOrganizationAddress(organizationAddress);
+	    user.setEmail(email);
 
-		if (newPassword != null && !newPassword.trim().isEmpty()) {
+	    // Update or Create Site Info
+	    if (user.getSites() == null || user.getSites().isEmpty()) {
+	        // Create new site if list is empty
+	        RESite newSite = new RESite();
+	        newSite.setSiteAddress(siteAddress);
+	        newSite.setSiteContactPerson(siteContactPerson);
+	        newSite.setRe(user);
+	        
+	        List<RESite> sites = new ArrayList<>();
+	        sites.add(newSite);
+	        user.setSites(sites);
+	    } else {
+	        // Update the first site in the list (default)
+	        RESite existingSite = user.getSites().get(0);
+	        existingSite.setSiteAddress(siteAddress);
+	        existingSite.setSiteContactPerson(siteContactPerson);
+	    }
 
-			if (currentPassword == null || !user.getPassword().equals(currentPassword)) {
-				return "redirect:/re/account?error=password";
-			}
+	    // Password Logic
+	    if (newPassword != null && !newPassword.trim().isEmpty()) {
+	        if (currentPassword == null || !user.getPassword().equals(currentPassword)) {
+	            return "redirect:/re/account?error=password";
+	        }
+	        user.setPassword(newPassword);
+	    }
 
-			user.setPassword(newPassword);
-		}
+	    // Save
+	    reRepository.save(user);
 
-		reRepository.save(user);
+	    session.setAttribute("userEmail", email);
 
-		session.setAttribute("userEmail", email);
-
-		return "redirect:/re/account?success=true";
+	    return "redirect:/re/account?success=true";
 	}
 }
