@@ -75,9 +75,13 @@
 		       th:value="${user.contactPersonName}"
 		       placeholder="Enter contact name" />
 
+		<label style="font-size: 13px; font-weight: bold; display: block; text-align: left; margin-top: 10px;">
+			   Organization Name <span style="color: #888; font-weight: normal;">(Cannot be edited)</span>
+		</label>
 		<input name="organizationName"
-		       th:value="${user.organizationName}"
-		       placeholder="Enter organization name" />
+			   th:value="${user.organizationName}"
+			   readonly
+			   style="background-color: #eee; cursor: not-allowed;" />
 
 		<input name="organizationAddress"
 		       th:value="${user.organizationAddress}"
