@@ -30,17 +30,14 @@ public class REController {
 	@Autowired
 	private RERepository reRepository;
 
-	@Autowired
-	private EnvironmentalPermitRepository environmentalPermitRepository;
+
 
 	@Autowired
 	private PermitRequestRepository permitRequestRepository;
 	
 	@Autowired
 	private PaymentRepository paymentRepository;
-	
-    @Autowired
-    private AcknowledgeEOService acknowledgeEOService;
+
 
 	@Autowired
 	private RequestStatusRepository requestStatusRepository;
@@ -52,135 +49,7 @@ public class REController {
 		return "re/dashboard";
 	}
 
-	@PostMapping("/re/pay/success")
-	public String paySuccess() {
-		return "redirect:/re/dashboard?paid=true";
-	}
 
-	@PostMapping("/re/pay/fail")
-	public String payFail() {
-		return "redirect:/re/dashboard?paid=false";
-	}
-
-	@GetMapping("/re/submit")
-	public String submitPermitPage(HttpSession session, Model model) {
-	    String email = (String) session.getAttribute("userEmail");
-	    RE user = reRepository.findByEmail(email);
-	    
-	    model.addAttribute("permits", environmentalPermitRepository.findAll());
-	    model.addAttribute("sites", user.getSites());
-	    
-	    return "re/submit-permit";
-	}
-
-	@GetMapping("/re/pay")
-	public String payPage(@RequestParam String requestNo, Model model) {
-
-	    PermitRequest request = permitRequestRepository.findById(requestNo)
-	            .orElse(null);
-
-	    if (request == null) {
-	        return "redirect:/re/dashboard?error=notfound";
-	    }
-
-	    model.addAttribute("request", request);
-	    model.addAttribute("fee", request.getEnvironmentalPermit().getPermitFee());
-
-	    return "re/pay";
-	}
-
-	@PostMapping("/re/pay")
-	public String handlePayment(@RequestParam String requestNo,
-	                            @RequestParam String action) {
-
-	    PermitRequest request = permitRequestRepository.findById(requestNo)
-	            .orElse(null);
-
-	    if (request == null) {
-	        return "redirect:/re/dashboard?error=notfound";
-	    }
-
-	    if (action.equals("pay")) {
-
-	        Payment payment = new Payment();
-	        payment.setPaymentID(UUID.randomUUID().toString());
-	        payment.setPaymentDate(new Date());
-	        payment.setPaymentMethod("CARD");
-	        payment.setLast4DigitsofCard(1234); // placeholder
-	        payment.setCardHolderName("Test User"); // placeholder
-	        payment.setPaymentApproved(true);
-	        payment.setPermitRequest(request);
-
-	        paymentRepository.save(payment);
-	        
-	        acknowledgeEOService.acceptPayment(request); 
-
-	        return "redirect:/re/dashboard?paid=true";
-
-	    } else {
-	        return "redirect:/re/dashboard?paid=false";
-	    }
-	}
-
-	@PostMapping("/re/submit")
-	public String submitPermit(@RequestParam String activityDescription, @RequestParam String activityStartDate,
-			@RequestParam String activityDuration, @RequestParam String permitId, @RequestParam Long siteId, HttpSession session) {
-
-		if (session.getAttribute("userEmail") == null) {
-			return "redirect:/login";
-		}
-
-		if (activityStartDate != null && activityDuration != null) {
-			if (java.sql.Date.valueOf(activityDuration).before(java.sql.Date.valueOf(activityStartDate))) {
-				return "redirect:/re/submit?error=date";
-			}
-		}
-
-		String email = (String) session.getAttribute("userEmail");
-		RE user = reRepository.findByEmail(email);
-
-		if (user == null) {
-			return "redirect:/login?error=nouser";
-		}
-
-		EnvironmentalPermit permit =
-		        environmentalPermitRepository.findById(permitId).orElse(null);
-
-		if (permit == null) {
-		    return "redirect:/re/submit?error=permit";
-		}
-		
-		RESite site = user.getSites().stream()
-                 .filter(s -> s.getId().equals(siteId))
-                 .findFirst()
-                 .orElse(null);
-
-		if (site == null) return "redirect:/re/submit?error=site";
-		
-		PermitRequest request = new PermitRequest();
-
-		// system-generated sequence (workbook requirement)
-		request.setRequestNo(UUID.randomUUID().toString());
-		request.setDateOfRequest(new Date());
-		request.setActivityDescription(activityDescription);
-		try {
-		    request.setActivityStartDate(java.sql.Date.valueOf(activityStartDate));
-		    request.setActivityDuration(java.sql.Date.valueOf(activityDuration));
-		} catch (Exception e) {
-		    return "redirect:/re/submit?error=date";
-		}
-
-		request.setPermitFee(permit.getPermitFee());
-
-		request.setRe(user);
-		request.setSite(site);
-
-		request.setEnvironmentalPermit(permit);
-
-		permitRequestRepository.save(request);
-
-		return "redirect:/re/pay?requestNo=" + request.getRequestNo();
-	}
 
 	@GetMapping("/re/requests")
 	public String myRequests(HttpSession session, Model model) {

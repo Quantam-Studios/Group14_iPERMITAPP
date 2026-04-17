@@ -69,8 +69,6 @@ public class ManagePermitsService { //probably done at this point
 
         rsRepository.save(status);
 
-        form.showAcknowledgement("Pending Payment");
-
         acknowledgeEO.acceptPayment(request);
     }
 }
