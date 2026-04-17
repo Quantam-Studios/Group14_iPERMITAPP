@@ -18,6 +18,8 @@ public class ReviewSubmittedApplicationsService {
     private RequestStatusRepository rsRepository;
     @Autowired
     private DecisionRepository dRepository;
+    @Autowired
+    private EmailService emailService;
 
     private EmailService email;
     private ReviewSubmittedApplicationsForm form;
@@ -34,6 +36,7 @@ public class ReviewSubmittedApplicationsService {
         status.setPermitRequestStatus("Being Reviewed");
         status.setPermitRequest(permit);
         status.setDate(currentDate);
+        emailService.sendUpdateEmail(permit, "Being Reviewed");
 
         rsRepository.save(status);
     }
@@ -55,6 +58,8 @@ public class ReviewSubmittedApplicationsService {
         status.setDate(currentDate);
 
         rsRepository.save(status);
+
+        emailService.sendUpdateEmail(permit, "Approved");
     }
 
     public void rejectRequest(PermitRequest permit, EO eo, String description){
@@ -73,7 +78,10 @@ public class ReviewSubmittedApplicationsService {
         status.setPermitRequest(permit);
         status.setDate(currentDate);
 
+
         rsRepository.save(status);
+
+        emailService.sendUpdateEmail(permit, "Rejected");
     }
 
     public void sendEmail(String recipient, String emailBody, String subjectLine){

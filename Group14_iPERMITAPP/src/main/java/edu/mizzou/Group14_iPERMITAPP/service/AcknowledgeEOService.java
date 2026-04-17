@@ -14,6 +14,9 @@ public class AcknowledgeEOService { //still needs work
     @Autowired
     private RequestStatusRepository rsRepository;
 
+    @Autowired
+    private EmailService emailService;
+
     public void acceptPayment(PermitRequest permit){
         // this should do something before updating the status, however that is going to interact with one of the
         // boundary classes, and I'm not confident enough to touch them yet
@@ -26,6 +29,8 @@ public class AcknowledgeEOService { //still needs work
         status.setDate(currentDate);
 
         rsRepository.save(status);
+
+        emailService.sendConfirmationEmail(permit);
     }
 
     public List<PermitRequest> getValidPermitRequests() {
