@@ -122,6 +122,19 @@
         <label>Fee:</label>
         <div th:text="${permit.permitFee}"></div>
     </div>
+	
+	<hr>
+	<h3>Site Information</h3>
+
+	<div class="section">
+	    <label>Site Address:</label>
+	    <div th:text="${permit.site?.siteAddress ?: 'No site selected'}"></div>
+	</div>
+
+	<div class="section">
+	    <label>Site Contact:</label>
+	    <div th:text="${permit.site?.siteContactPerson ?: 'N/A'}"></div>
+	</div>
 
     <hr>
 
