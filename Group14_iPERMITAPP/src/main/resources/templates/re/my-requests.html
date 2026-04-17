@@ -78,8 +78,36 @@
             <td th:text="${req.requestNo}"></td>
 
             <td>
-                <span th:if="${paidMap[req.requestNo]}" class="paid">PAID</span>
-                <span th:if="${!paidMap[req.requestNo]}" class="unpaid">UNPAID</span>
+
+                <!-- Review Status -->
+                <span th:if="${statusMap[req.requestNo] == 'Being Reviewed'}"
+                      class="unpaid">
+                    UNDER REVIEW
+                </span>
+
+                <span th:if="${statusMap[req.requestNo] == 'Approved'}"
+                      class="paid">
+                    APPROVED
+                </span>
+
+                <span th:if="${statusMap[req.requestNo] == 'Rejected'}"
+                      class="unpaid">
+                    REJECTED
+                </span>
+
+                <br>
+
+                <!-- Payment Status -->
+                <span th:if="${paidMap[req.requestNo]}"
+                      class="paid">
+                    PAID
+                </span>
+
+                <span th:if="${!paidMap[req.requestNo]}"
+                      class="unpaid">
+                    UNPAID
+                </span>
+
             </td>
 
             <td>$<span th:text="${req.permitFee}"></span></td>

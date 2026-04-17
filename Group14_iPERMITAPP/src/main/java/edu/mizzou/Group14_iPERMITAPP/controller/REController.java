@@ -8,6 +8,8 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
+import edu.mizzou.Group14_iPERMITAPP.repository.*;
+import edu.mizzou.Group14_iPERMITAPP.model.RequestStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,10 +22,6 @@ import edu.mizzou.Group14_iPERMITAPP.model.Payment;
 import edu.mizzou.Group14_iPERMITAPP.model.PermitRequest;
 import edu.mizzou.Group14_iPERMITAPP.model.RE;
 import edu.mizzou.Group14_iPERMITAPP.model.RESite;
-import edu.mizzou.Group14_iPERMITAPP.repository.EnvironmentalPermitRepository;
-import edu.mizzou.Group14_iPERMITAPP.repository.PaymentRepository;
-import edu.mizzou.Group14_iPERMITAPP.repository.PermitRequestRepository;
-import edu.mizzou.Group14_iPERMITAPP.repository.RERepository;
 import edu.mizzou.Group14_iPERMITAPP.service.AcknowledgeEOService;
 import jakarta.servlet.http.HttpSession;
 
@@ -43,6 +41,9 @@ public class REController {
 	
     @Autowired
     private AcknowledgeEOService acknowledgeEOService;
+
+	@Autowired
+	private RequestStatusRepository requestStatusRepository;
 
 	private static final Pattern EMAIL_PATTERN = Pattern.compile("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$");
 
@@ -176,31 +177,55 @@ public class REController {
 	@GetMapping("/re/requests")
 	public String myRequests(HttpSession session, Model model) {
 
-	    String email = (String) session.getAttribute("userEmail");
+		String email = (String) session.getAttribute("userEmail");
 
-	    if (email == null) {
-	        return "redirect:/login";
-	    }
+		if (email == null) {
+			return "redirect:/login";
+		}
 
-	    RE user = reRepository.findByEmail(email);
+		RE user = reRepository.findByEmail(email);
 
-	    if (user == null) {
-	        return "redirect:/login";
-	    }
+		if (user == null) {
+			return "redirect:/login";
+		}
 
-	    List<PermitRequest> requests = permitRequestRepository.findByRe(user);
+		// Get this RE's requests
+		List<PermitRequest> requests = permitRequestRepository.findByRe(user);
 
-	    Map<String, Boolean> paidMap = new HashMap<>();
+		// Existing payment map
+		Map<String, Boolean> paidMap = new HashMap<>();
 
-	    for (PermitRequest r : requests) {
-	        boolean paid = paymentRepository.findByPermitRequest(r) != null;
-	        paidMap.put(r.getRequestNo(), paid);
-	    }
+		for (PermitRequest r : requests) {
+			boolean paid = paymentRepository.findByPermitRequest(r) != null;
+			paidMap.put(r.getRequestNo(), paid);
+		}
 
-	    model.addAttribute("requests", requests);
-	    model.addAttribute("paidMap", paidMap);
+		// NEW: status map
+		Map<String, String> statusMap = new HashMap<>();
 
-	    return "re/my-requests";
+		// Uses your existing repository method
+		List<RequestStatus> latestStatuses =
+				requestStatusRepository.findLatestStatuses();
+
+		for (RequestStatus rs : latestStatuses) {
+			String requestNo = rs.getPermitRequest().getRequestNo();
+			String status = rs.getPermitRequestStatus();
+
+			statusMap.put(requestNo, status);
+		}
+
+		// Default if no status exists yet
+		for (PermitRequest r : requests) {
+			if (!statusMap.containsKey(r.getRequestNo())) {
+				statusMap.put(r.getRequestNo(), "Being Reviewed");
+			}
+		}
+
+		model.addAttribute("requests", requests);
+		model.addAttribute("paidMap", paidMap);
+		model.addAttribute("statusMap", statusMap);
+
+		return "re/my-requests";
 	}
 
 	@GetMapping("/re/account")
