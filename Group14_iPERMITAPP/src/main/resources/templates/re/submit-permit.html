@@ -102,16 +102,19 @@
 	</div>
 
 	<script>
-	document.querySelector("form").addEventListener("submit", function (e) {
-	    const start = document.querySelector("input[name='activityStartDate']").value;
-	    const end = document.querySelector("input[name='activityDuration']").value;
+	    const today = new Date().toISOString().split('T')[0];
+	    document.querySelector("input[name='activityStartDate']").setAttribute('min', today);
+	    document.querySelector("input[name='activityDuration']").setAttribute('min', today);
 
-	    if (start && end && end < start) {
-	        e.preventDefault();
-	        alert("End date must be after start date.");
-	    }
-	});
+	    document.querySelector("form").addEventListener("submit", function (e) {
+	        const start = document.querySelector("input[name='activityStartDate']").value;
+	        const end = document.querySelector("input[name='activityDuration']").value;
+
+	        if (start && end && end < start) {
+	            e.preventDefault();
+	            alert("End date must be after start date.");
+	        }
+	    });
 	</script>
-	
 </body>
 </html>
