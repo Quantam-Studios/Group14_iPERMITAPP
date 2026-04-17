@@ -2,38 +2,86 @@
 <html>
 <head>
     <title>Pay Permit Fee</title>
+    <style>
+        body {
+            font-family: Arial;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            width: 400px;
+            margin: 80px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+
+        h2 { text-align: center; }
+
+        .details {
+            margin: 20px 0;
+            padding: 10px;
+            background: #f9f9f9;
+            border-radius: 4px;
+        }
+
+        input {
+            width: 90%;
+            padding: 8px;
+            margin: 6px 0;
+            display: block;
+        }
+
+        .button-group {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        button {
+            padding: 8px 14px;
+            cursor: pointer;
+            flex: 1;
+        }
+
+        .pay-btn { background-color: #28a745; color: white; border: none; border-radius: 4px; }
+        .cancel-btn { background-color: #6c757d; color: white; border: none; border-radius: 4px; }
+    </style>
 </head>
 <body>
 
-	<h2>Pay Permit Fee</h2>
+<div class="container">
+    <h2>Pay Permit Fee</h2>
 
-	<p>
-	    Request ID: <span th:text="${request.requestNo}"></span>
-	</p>
+    <div class="details">
+        <p><strong>Request ID:</strong> <span th:text="${request.requestNo}"></span></p>
+        <p><strong>Permit:</strong> <span th:text="${request.environmentalPermit.permitName}"></span></p>
+        <p><strong>Amount Due:</strong> $<span th:text="${fee}"></span></p>
+    </div>
 
-	<p>
-	    Permit Type: <span th:text="${request.environmentalPermit.permitName}"></span>
-	</p>
+    <form method="post" action="/re/pay">
+        <input type="hidden" name="requestNo" th:value="${request.requestNo}" />
 
-	<p>
-	    Amount Due: $<span th:text="${fee}"></span>
-	</p>
+        <label>Card Number (16 Digits):</label>
+        <!-- pattern: 0-9 only, exactly 16 digits. inputmode: shows numeric keyboard on mobile -->
+        <input name="cardNumber" 
+               type="text" 
+               placeholder="1234123412341234" 
+               pattern="[0-9]{16}" 
+               inputmode="numeric"
+               title="Please enter exactly 16 digits"
+               required />
 
-	<form method="post" action="/re/pay">
+        <div class="button-group">
+            <button type="submit" name="action" value="pay" class="pay-btn">Pay Now</button>
+            <button type="submit" name="action" value="cancel" class="cancel-btn">Cancel</button>
+        </div>
+    </form>
 
-	    <input type="hidden" name="requestNo" th:value="${request.requestNo}" />
-
-	    <label>Card Number:</label>
-	    <input name="cardNumber" placeholder="1234 5678 9012 3456"/>
-
-	    <br><br>
-
-	    <button name="action" value="pay">Pay</button>
-	    <button name="action" value="cancel">Cancel</button>
-	</form>
-
-	<br>
-	<a href="/re/dashboard">← Back to Dashboard</a>
+    <br>
+    <a href="/re/dashboard">← Back to Dashboard</a>
+</div>
 
 </body>
 </html>
