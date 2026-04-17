@@ -11,6 +11,8 @@ Make sure you have the following installed before getting started:
 - **Java 17+** (the project targets Java 17 +)
 - **Maven 3.6+** (or use the included `mvnw` wrapper)
 - **PostgreSQL 13+**
+- ### IDE Setup (Important)
+If you are using an IDE (IntelliJ IDEA, Eclipse, etc.), ensure you have the **Lombok plugin** installed and **Annotation Processing** enabled in your IDE settings. Without this, your IDE may report compilation errors for missing getters, setters, or constructors.
 
 ---
 
